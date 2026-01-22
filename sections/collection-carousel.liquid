@@ -1,0 +1,228 @@
+<section class="collection-carousel-section" style="background-color: {{ section.settings.section_bg_color }};">
+  <div class="page-width">
+    {% if section.settings.section_title %}
+      <h2 class="section-title">{{ section.settings.section_title }}</h2>
+    {% endif %}
+
+    {% if section.settings.collection != blank %}
+      <div class="collection-carousel-wrapper">
+        {% assign products = collections[section.settings.collection].products %}
+        {% for product in products %}
+          <div class="carousel-item">
+            {% comment %} <a href="{{ product.url }}">
+              <img 
+                src="{{ product.featured_image | img_url: '600x600' }}" 
+                srcset="
+                  {{ product.featured_image | img_url: '300x300' }} 300w,
+                  {{ product.featured_image | img_url: '600x600' }} 600w,
+                  {{ product.featured_image | img_url: '1024x1024' }} 1024w,
+                  {{ product.featured_image | img_url: '2048x2048' }} 2048w
+                "
+                sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, 25vw" 
+                alt="{{ product.title }}" 
+                style="width:100%; height:auto; border-radius: {{ section.settings.product_border_radius }}px;" width="" height="">
+              <p class="product-title">{{ product.title }}</p>
+            </a>  {% endcomment %}
+            {% render 'card-product',
+                  card_product: product,
+                  media_aspect_ratio: 'square',
+                  show_secondary_image: false,
+                  show_vendor: false,
+                  show_rating: false,
+                  lazy_load: true,
+                  quick_add: false,
+                  section_id: section.id
+              %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p>Please select a collection in the section settings.</p>
+    {% endif %}
+  </div>
+
+  <!-- Slick CSS & JS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+  <style>
+    .collection-carousel-section{
+    margin-top:50px;}
+    .collection-carousel-section .section-title {
+      font-family: Archivo;
+      font-weight: 600;
+      font-size: 18px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 25px;
+      margin-top: 20px;
+      position:relative;
+    }
+    .collection-carousel-section h2.section-title:after {
+      content: "";
+      border: 1px solid #D3D3D3;
+      position: absolute;
+      display: block;
+      width: 25px;
+      margin: auto;
+      left: 0;
+      right: 0;
+      bottom: -10px;
+    }
+    
+    .collection-carousel-section .carousel-item {
+      padding: {{ section.settings.carousel_item_padding }}px;
+      text-align: center;
+     
+    }
+     .carousel-item a {
+        text-decoration:none;
+      }
+    .collection-carousel-section .carousel-item img {
+      width: 100%;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+    .collection-carousel-section .product-title {
+      font-size: {{ section.settings.product_title_font_size }}px;
+      color: {{ section.settings.product_title_color }};
+    }
+    .collection-carousel-section .slick-prev,
+    .collection-carousel-section .slick-next{
+    background-color: #000;
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex !important;
+    align-items: center;
+    justify-content: end;
+    z-index: 2;
+    top: 45%;
+    position: absolute;
+    opacity: 0.9;
+  }
+  .collection-carousel-section .slick-prev {
+    justify-content: unset !important;
+  }
+
+  button.slick-prev.slick-arrow.slick-disabled {
+      background: #ddd;
+      border: #747474;
+  }
+
+  .collection-carousel-section .slick-prev,
+    .collection-carousel-section .slick-next{
+    
+    }
+    .collection-carousel-section .slick-prev:hover,
+    .collection-carousel-section .slick-next:hover {
+    opacity:1;
+    }
+
+    .collection-carousel-section .slick-prev {
+    left: -30px;
+    }
+    .collection-carousel-section .slick-next {
+    right: -30px;
+    }
+
+.collection-carousel-wrapper {
+  margin-left: -{{ section.settings.slide_gap | divided_by: 2 }}px;
+  margin-right: -{{ section.settings.slide_gap | divided_by: 2 }}px;
+}
+.collection-carousel-wrapper {
+  display: flex;
+  margin-left: -{{ section.settings.slide_gap | divided_by: 2 }}px;
+  margin-right: -{{ section.settings.slide_gap | divided_by: 2 }}px;
+}
+.collection-carousel-section .carousel-item {
+  padding: 0 {{ section.settings.slide_gap | divided_by: 2 }}px;
+  text-align: center;
+}
+.collection-carousel-section .carousel-item img {
+  width: 100%;
+  {% comment %} max-height: 200px; {% endcomment %}
+  object-fit: contain;
+  margin-bottom: 10px;
+  border-radius: {{ section.settings.product_border_radius }}px;
+}
+{% comment %} }
+ /*  FIX: remove blue underline from product title link (Hira) */ 
+    .collection-carousel-section .carousel-item a {
+      text-decoration: none !important;
+      color: inherit !important;
+    } {% endcomment %}
+@media(max-width:768px){
+   .collection-carousel-section .slick-prev,
+    .collection-carousel-section .slick-next{
+     display: none !important;
+    }
+}
+  </style>
+
+  <script>
+    jQuery(document).ready(function($){
+      $('.collection-carousel-wrapper').slick({
+        slidesToShow: {{ section.settings.slides_desktop }},
+        slidesToScroll: 1,
+        infinite:false,
+        autoplay: {{ section.settings.autoplay | json }},
+        autoplaySpeed: {{ section.settings.autoplay_speed }},
+        arrows: {{ section.settings.show_arrows | json }},
+        prevArrow: '<button type="button" class="slick-prev"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_47_1241)"><path d="M8.0735 10.0042L15.5554 2.52195C15.7615 2.31642 15.8748 2.04163 15.8748 1.74862C15.8748 1.45545 15.7615 1.18081 15.5554 0.974959L14.8998 0.319675C14.6941 0.113496 14.4192 0 14.1262 0C13.8332 0 13.5585 0.113496 13.3527 0.319675L4.44423 9.22797C4.23756 9.43447 4.12439 9.71041 4.1252 10.0037C4.12439 10.2984 4.2374 10.574 4.44423 10.7806L13.3444 19.6803C13.5502 19.8865 13.8249 20 14.118 20C14.4111 20 14.6857 19.8865 14.8917 19.6803L15.5472 19.025C15.9737 18.5985 15.9737 17.9042 15.5472 17.4779L8.0735 10.0042Z" fill="white"/></g><defs><clipPath id="clip0_47_1241"><rect width="20" height="20" fill="white"/></clipPath></defs></svg></button>',
+        nextArrow: '<button type="button" class="slick-next"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_47_1256)"><path d="M11.9265 10.0042L4.44451 2.52195C4.23849 2.31642 4.12516 2.04163 4.12516 1.74862C4.12516 1.45545 4.23849 1.18081 4.44451 0.974959L5.10012 0.319675C5.30581 0.113496 5.58077 0 5.87378 0C6.16678 0 6.44142 0.113496 6.64727 0.319675L15.5557 9.22797C15.7624 9.43447 15.8756 9.71041 15.8748 10.0037C15.8756 10.2984 15.7626 10.574 15.5557 10.7806L6.65556 19.6803C6.44971 19.8865 6.17508 20 5.88191 20C5.5889 20 5.31426 19.8865 5.10825 19.6803L4.4528 19.025C4.0263 18.5985 4.0263 17.9042 4.4528 17.4779L11.9265 10.0042Z" fill="white"></path></g><defs><clipPath id="clip0_47_1256"><rect width="20" height="20" fill="white" transform="matrix(-1 0 0 1 20 0)"></rect></clipPath></defs></svg></button>',
+        dots: {{ section.settings.show_dots | json }},
+        responsive: [
+          {
+            breakpoint: 1024,
+            settings: { slidesToShow: {{ section.settings.slides_tablet }} }
+          },
+          {
+            breakpoint: 768,
+            settings: { slidesToShow: {{ section.settings.slides_mobile }} }
+            
+          }
+        ]
+      });
+    });
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Collection Carousel",
+  "settings": [
+    { "type": "text", "id": "section_title", "label": "Section Title", "default": "Featured Collection" },
+    { "type": "collection", "id": "collection", "label": "Select Collection" },
+    { "type": "color", "id": "section_bg_color", "label": "Section Background Color", "default": "#ffffff" },
+    { "type": "number", "id": "slides_desktop", "label": "Slides per view (Desktop)", "default": 4 },
+    { "type": "number", "id": "slides_tablet", "label": "Slides per view (Tablet)", "default": 3 },
+    { "type": "number", "id": "slides_mobile", "label": "Slides per view (Mobile)", "default": 2 },
+    { "type": "range", "id": "carousel_item_padding", "label": "Item Padding (px)", "min": 0, "max": 50, "step": 1, "default": 10 },
+    { "type": "range", "id": "product_border_radius", "label": "Product Image Border Radius (px)", "min": 0, "max": 50, "step": 1, "default": 5 },
+    { "type": "number", "id": "product_title_font_size", "label": "Product Title Font Size (px)", "default": 14 },
+    { "type": "color", "id": "product_title_color", "label": "Product Title Color", "default": "#000000" },
+    { "type": "checkbox", "id": "autoplay", "label": "Autoplay Carousel", "default": true },
+    { "type": "number", "id": "autoplay_speed", "label": "Autoplay Speed (ms)", "default": 2000 },
+    {
+    "type": "range",
+    "id": "slide_gap",
+    "label": "Gap Between Slides (px)",
+    "min": 0,
+    "max": 50,
+    "step": 1,
+    "default": 20
+  },
+
+    { "type": "checkbox", "id": "show_arrows", "label": "Show Arrows", "default": true },
+    { "type": "checkbox", "id": "show_dots", "label": "Show Dots", "default": false }
+  ],
+  "blocks": [],
+  "presets": [
+    { "name": "Collection Carousel" }
+  ]
+}
+{% endschema %}

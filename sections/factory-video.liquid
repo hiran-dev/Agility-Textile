@@ -1,0 +1,290 @@
+{% comment %} <section class="factory-video-section" 
+         style="background-image: url({{ section.settings.bg_image | image_url: width: 1800 }});
+                
+                background-size: cover; 
+                background-position: center; 
+                padding: {{ section.settings.section_padding }}px 0; 
+                position: relative;">
+  <div class="page-width" style=" text-align: center; color: {{ section.settings.text_color }};">
+    {% if section.settings.video_title %}
+      <h2 class="video-title">{{ section.settings.video_title }}</h2>
+    {% endif %}
+
+    <div class="video-play-wrapper" style="display: inline-block; cursor: pointer; margin-top: 20px;">
+      <div class="play-button-overlay" style="position: absolute; top: 65%; left: 50%; transform: translate(-50%, -50%);">
+        <svg width="70" height="70" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+        <!-- Circle background -->
+        <circle cx="30" cy="30" r="28" fill="{{ section.settings.circle_color }}" />
+        
+        <!-- Play triangle -->
+        <polygon points="24,18 42,30 24,42" fill="{{ section.settings.triangle_color }}" />
+        </svg>
+
+      </div>
+      <div class="video-iframe-wrapper" style="position: absolute;display: none;width: 100%;max-width: 100%;margin: 0px auto;top: 0;left: 0;">
+        {% if section.settings.video_type == 'youtube' %}
+          <iframe class="video-frame" src="https://www.youtube.com/embed/{{ section.settings.video_id }}?autoplay=1&rel=0" width="100%" height="450" frameborder="0" allowfullscreen style="border-radius: {{ section.settings.video_border_radius }}px;"></iframe>
+        {% elsif section.settings.video_type == 'vimeo' %}
+          <iframe src="https://player.vimeo.com/video/{{ section.settings.video_id }}?autoplay=1" width="100%" height="450" frameborder="0" allowfullscreen style="border-radius: {{ section.settings.video_border_radius }}px;"></iframe>
+        {% elsif section.settings.video_type == 'mp4' %}
+          <video width="100%" height="450" controls autoplay style="border-radius: {{ section.settings.video_border_radius }}px;">
+            <source src="{{ section.settings.video_mp4_url }}" type="video/mp4">
+          </video>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .factory-video-section .video-title {
+      font-size: 40px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: {{ section.settings.text_color }};
+    }
+    @media(max-width:768px){
+      .factory-video-section .video-title {
+        font-size: 28px;
+      }
+      .video-iframe-wrapper iframe, .video-iframe-wrapper video {
+        height: 250px !important;
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const wrapper = document.querySelector('.factory-video-section .video-play-wrapper');
+      if (!wrapper) return;
+
+      const overlay = wrapper.querySelector('.play-button-overlay');
+      const iframeWrapper = wrapper.querySelector('.video-iframe-wrapper');
+
+      overlay.addEventListener('click', function() {
+        overlay.style.display = 'none';
+        iframeWrapper.style.display = 'block';
+      });
+    });
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Factory Video Section",
+  "settings": [
+    { "type": "image_picker", "id": "bg_image", "label": "Background Image" },
+    { "type": "text", "id": "video_title", "label": "Video Title", "default": "SEE INSIDE OUR FACTORY" },
+    { "type": "color", "id": "text_color", "label": "Text Color", "default": "#ffffff" },
+    {
+        "type": "color",
+        "id": "circle_color",
+        "label": "Play Button Circle Color",
+        "default": "#ffffff"
+        },
+        {
+        "type": "color",
+        "id": "triangle_color",
+        "label": "Play Button Triangle Color",
+        "default": "#000000"
+        },
+    { "type": "number", "id": "section_padding", "label": "Section Padding (px)", "default": 150 },
+    { "type": "select", "id": "video_type", "label": "Video Type", "default": "youtube", "options": [
+      { "value": "youtube", "label": "YouTube" },
+      { "value": "vimeo", "label": "Vimeo" },
+      { "value": "mp4", "label": "MP4 Upload" }
+    ]},
+    { "type": "text", "id": "video_id", "label": "YouTube/Vimeo Video ID" },
+    { "type": "url", "id": "video_mp4_url", "label": "MP4 Video URL" },
+    { "type": "number", "id": "video_border_radius", "label": "Video Border Radius (px)", "default": 8 }
+  ],
+  "presets": [
+    { "name": "Factory Video Section" }
+  ]
+}
+{% endschema %} {% endcomment %}
+<section class="factory-video-section custom-video-banner">
+
+  <div class="page-width" style="text-align: center; color: {{ section.settings.text_color }};">
+    
+    {% if section.settings.video_title %}
+      <h2 class="video-title">{{ section.settings.video_title }}</h2>
+    {% endif %}
+
+    <!-- Video Player -->
+    <div class="video-play-wrapper">
+
+      <div class="video-iframe-wrapper">
+        {% if section.settings.video_type == 'youtube' %}
+          <iframe id="youtubeVideo" class="video-frame"
+                  src="https://www.youtube.com/embed/{{ section.settings.video_id }}?enablejsapi=1&autoplay=1&mute=1&rel=0&playsinline=1"
+                  frameborder="0" allowfullscreen></iframe>
+
+        {% elsif section.settings.video_type == 'vimeo' %}
+          <iframe id="vimeoVideo" class="video-frame"
+                  src="https://player.vimeo.com/video/{{ section.settings.video_id }}?autoplay=1&muted=1&background=0"
+                  frameborder="0" allowfullscreen></iframe>
+
+        {% elsif section.settings.video_type == 'mp4' %}
+          <video id="mp4Video" class="video-frame" muted playsinline>
+            <source src="{{ section.settings.video_mp4_url }}" type="video/mp4">
+          </video>
+        {% endif %}
+      </div>
+
+    </div>
+
+  </div>
+
+  <style>
+    .custom-video-banner,
+    .factory-video-section {
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+    }
+
+    /* Video Title with Underline */
+    .factory-video-section .video-title {
+      font-family: Archivo;
+      font-size: 20px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 6%;
+      color: {{ section.settings.text_color }};
+      margin-top: 25px !important;
+      margin-bottom: 20px !important;
+      text-align: center;
+      position: relative; /* for underline */
+      display: inline-block; /* center underline */
+    }
+
+    .factory-video-section .video-title:after {
+  content: "";
+  border: 1px solid #D3D3D3; /* fixed color */
+  position: absolute;
+  width: 50px; /* adjust underline length */
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -10px; /* distance from heading */
+}
+
+
+    .video-play-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1800px;
+      height: 502px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: {{ section.settings.video_border_radius }}px;
+      background-image: url({{ section.settings.bg_image | image_url: width: 1800 }});
+      background-size: cover;
+      background-position: center;
+    }
+
+    .video-iframe-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .video-frame,
+    .video-iframe-wrapper iframe,
+    .video-iframe-wrapper video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: {{ section.settings.video_border_radius }}px;
+    }
+
+    @media(max-width:768px){
+      .factory-video-section .video-title {
+        font-size: 28px;
+        margin-bottom: 30px !important;
+      }
+      .video-play-wrapper {
+        height: 240px;
+      }
+    }
+  </style>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="https://player.vimeo.com/api/player.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const section = document.querySelector('.factory-video-section');
+
+      // MP4 Video
+      const mp4 = document.getElementById('mp4Video');
+
+      // YouTube player
+      let ytPlayer;
+      if (document.getElementById('youtubeVideo')) {
+        ytPlayer = new YT.Player('youtubeVideo');
+      }
+
+      // Vimeo player
+      let vimeoPlayer;
+      if (document.getElementById('vimeoVideo')) {
+        vimeoPlayer = new Vimeo.Player('vimeoVideo');
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              // Section in view → play
+              if (mp4) mp4.play();
+              if (ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
+              if (vimeoPlayer && vimeoPlayer.play) vimeoPlayer.play();
+            } else {
+              // Section out of view → pause
+              if (mp4) mp4.pause();
+              if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
+              if (vimeoPlayer && vimeoPlayer.pause) vimeoPlayer.pause();
+            }
+          });
+        },
+        { threshold: 0.6 } // 60% visibility
+      );
+
+      observer.observe(section);
+    });
+  </script>
+
+</section>
+
+{% schema %}
+{
+  "name": "Factory Video Section",
+  "settings": [
+    { "type": "image_picker", "id": "bg_image", "label": "Thumbnail Image (1800×502 recommended)" },
+    { "type": "text", "id": "video_title", "label": "Video Title", "default": "SEE INSIDE OUR FACTORY" },
+    { "type": "color", "id": "text_color", "label": "Text Color", "default": "#ffffff" },
+    { "type": "number", "id": "section_padding", "label": "Section Padding (px)", "default": 150 },
+    { 
+      "type": "select",
+      "id": "video_type",
+      "label": "Video Type",
+      "default": "youtube",
+      "options": [
+        { "value": "youtube", "label": "YouTube" },
+        { "value": "vimeo", "label": "Vimeo" },
+        { "value": "mp4", "label": "MP4 Upload" }
+      ]
+    },
+    { "type": "text", "id": "video_id", "label": "YouTube/Vimeo Video ID" },
+    { "type": "url", "id": "video_mp4_url", "label": "MP4 Video URL" },
+    { "type": "number", "id": "video_border_radius", "label": "Video Border Radius (px)", "default": 8 }
+  ],
+  "presets": [
+    { "name": "Factory Video Section" }
+  ]
+}
+{% endschema %}
+

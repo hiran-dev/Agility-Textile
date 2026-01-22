@@ -1,0 +1,176 @@
+{% assign collection_title = '' %}
+
+{% if collection %}
+  {%- assign collection_title = collection.title -%}
+{% elsif template.name == 'list-collections' %}
+  {%- assign collection_title = 'All Collections' -%}  
+{% elsif product and product.collections.size > 0 %}
+  {%- assign collection_title = product.collections.first.title -%}
+{% endif %}
+
+{%- comment -%} Override with custom title if provided {%- endcomment -%}
+{% assign custom_title = section.settings.custom_title_breadcrumb | strip %}
+{% if custom_title != '' and custom_title != 'Enter custom title here' %}
+  {% assign collection_title = custom_title %}
+{% endif %}
+<section 
+  class="breadcrumb-banner" 
+  style="
+    background-image: url({{ section.settings.bg_image | image_url: width: 2000 }});
+    background-size: {{ section.settings.bg_size }};
+    background-position: center;
+    height: {{ section.settings.section_height }};
+    display: flex;
+    align-items: center;
+    justify-content: {% if section.settings.text_align == 'left' %}flex-start{% elsif section.settings.text_align == 'center' %}center{% else %}flex-end{% endif %};
+    position: relative;
+    margin-bottom:60px;
+  "
+>
+  <!-- Overlay -->
+  <div 
+    class="breadcrumb-banner-overlay" 
+    style="
+      background: {{ section.settings.overlay_color }};
+      opacity: {{ section.settings.overlay_opacity }};
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display:block;
+    "
+  ></div>
+
+  <!-- Content -->
+  <div 
+    class="breadcrumb-content page-width" 
+    style="
+      position: relative; 
+      z-index: 2; 
+      text-align: {{ section.settings.text_align }};
+      width: 100%;
+      padding:0;
+    "
+  >
+    {% if section.settings.breadcrumb_mode == 'full' %}
+      <nav class="breadcrumbs">
+        <a href="/">Home</a>
+        {% if template.name != 'index' %}
+          <span>&gt;</span>
+          {{ page_title }}
+        {% endif %}
+      </nav>
+    {% endif %}
+
+    {% if section.settings.breadcrumb_mode == 'title' %}
+      <h1 class="breadcrumb-title">{{ collection_title }}</h1>
+    {% endif %}
+  </div>
+
+  <style>
+    .breadcrumb-title {
+    font-family: Archivo Narrow;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 100%;
+    letter-spacing: 6%;
+    text-transform: uppercase;
+      margin: 0;
+      color: {{ section.settings.text_color }};
+    }
+    .breadcrumbs {
+      color: {{ section.settings.text_color }};
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .breadcrumbs a {
+      color: {{ section.settings.text_color }};
+      text-decoration: none;
+    }
+
+    @media(max-width: 768px) {
+      .breadcrumb-title { font-size: 28px; }
+    }
+  </style>
+</section>
+
+{% schema %}
+{
+  "name": "Breadcrumb Banner",
+  "settings": [
+    {
+      "type": "select",
+      "id": "breadcrumb_mode",
+      "label": "Breadcrumb Mode",
+      "default": "full",
+      "options": [
+        { "value": "full", "label": "Full Breadcrumbs" },
+        { "value": "title", "label": "Only Title" }
+      ]
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "select",
+      "id": "bg_size",
+      "label": "Background Size",
+      "default": "cover",
+      "options": [
+        { "value": "cover", "label": "Cover" },
+        { "value": "contain", "label": "Contain" },
+        { "value": "auto", "label": "Auto" },
+        { "value": "100% 100%", "label": "Stretch (Fit height & width)" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "section_height",
+      "label": "Section Height (ex: 300px, 50vh)",
+      "default": "350px"
+    },
+    {
+      "type": "text",
+      "id": "custom_title_breadcrumb",
+      "label": "Custom Title (Optional)",
+      "default": "Enter custom title here"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay Opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "default": 0.3
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text Alignment",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Breadcrumb Banner" }
+  ]
+}
+{% endschema %}

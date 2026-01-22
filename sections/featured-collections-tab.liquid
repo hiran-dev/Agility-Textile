@@ -1,0 +1,233 @@
+{{ 'template-collection.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+<section class="featured-collections-tabs">
+  <div class="container">
+    {% if section.settings.section_title %}
+      <h2 class="section-title">{{ section.settings.section_title }}</h2>
+    {% endif %}
+
+    <!-- Tabs -->
+    <div class="collection-tabs">
+      {% for tab in section.blocks %}
+        <button class="tab-btn {% if forloop.first %}active{% endif %}" data-tab="tab-{{ forloop.index }}">
+          {{ tab.settings.collection_title }}
+        </button>
+      {% endfor %}
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      {% for tab in section.blocks %}
+        {% comment %} {% assign collection = collections[tab.settings.collection_handle] %} {% endcomment %}
+         {% assign collection = tab.settings.collection_handle %}
+        <div class="tab-pane {% if forloop.first %}active{% endif %}" id="tab-{{ forloop.index }}">
+          <div class="products-grid">
+            {% comment %} {% for product in collection.products limit: section.settings.items_per_tab %}
+              <div class="product-card">
+                <a href="{{ product.url }}">
+                 <img 
+                    src="{{ product.featured_image | img_url: '600x600' }}" 
+                    srcset="{{ product.featured_image | img_url: '1200x1200' }} 2x, {{ product.featured_image | img_url: '1800x1800' }} 3x" 
+                    alt="{{ product.title }}" 
+                    width="600" 
+                    height="600" 
+                    style="width:100%; height:auto;" />
+
+                  <p class="product-title">{{ product.title }}</p>
+                </a>
+              </div>
+            {% endfor %} {% endcomment %}
+            {% for product in collection.products limit: section.settings.items_per_tab %}
+               {% render 'card-product',
+                  card_product: product,
+                  media_aspect_ratio: 'square',
+                  show_secondary_image: false,
+                  show_vendor: false,
+                  show_rating: false,
+                  lazy_load: true,
+                  quick_add: false,
+                  section_id: section.id
+              %}
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <style>
+    .featured-collections-tabs .container {
+      max-width: 1300px;
+      margin: 0 auto 30px;
+    }
+.featured-collections-tabs .section-title {
+    font-family: Archivo;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+    text-align: center;
+    display: block;
+    position: relative;
+    margin-bottom: 25px;
+    margin-top: 20px;
+}
+.featured-collections-tabs h2.section-title:after {
+    content: "";
+    border: 1px solid #D3D3D3;
+    position: absolute;
+    display: block;
+    width: 25px;
+    margin: auto;
+    left: 0;
+    right: 0;
+    bottom: -10px;
+}
+    .featured-collections-tabs .collection-tabs {
+      display: flex;
+      gap: {{ section.settings.tab_gap }}px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      justify-content:center;
+    }
+    .featured-collections-tabs .tab-btn {
+      background: {{ section.settings.tab_bg_color }};
+      color: {{ section.settings.tab_text_color }};
+      border: none;
+      padding: {{ section.settings.tab_padding }}px {{ section.settings.tab_padding | times: 2 }}px;  
+      cursor: pointer;
+      border-radius: {{ section.settings.tab_border_radius }}px;
+      font-weight: bold;
+      transition: all 0.3s;
+        font-family: Archivo;
+        font-weight: 600;
+        font-style: SemiBold;
+        font-size: 13px;
+        line-height: 100%;
+        letter-spacing: 6%;
+        text-transform: uppercase;
+    }
+    .featured-collections-tabs .tab-btn.active {
+      background: {{ section.settings.tab_active_bg_color }};
+      color: {{ section.settings.tab_active_text_color }};
+    }
+    .featured-collections-tabs .tab-pane {
+      display: none;
+    }
+    .featured-collections-tabs .tab-pane.active {
+      display: block;
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat({{ section.settings.desktop_columns }}, 1fr);
+      gap: 20px;
+    }
+    .product-card img {
+      width: 100%;
+      object-fit: cover;
+    }
+    .product-card a {
+    text-decoration:none;}
+    .product-title {
+    margin-top: 10px;
+    font-family: Barlow;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 100%;
+    letter-spacing: 6%;
+    text-align: center;
+    text-transform: capitalize;
+    color: #000;
+}.product-card:hover {
+    opacity: 0.9;
+}
+    @media (max-width: 768px) {
+      .featured-collections-tabs .collection-tabs {
+        flex-wrap: nowrap !important;
+        overflow: scroll;
+        scroll-behavior: smooth;
+          /* Firefox */
+        scrollbar-width: none;
+        /* IE / old Edge */
+        -ms-overflow-style: none;
+      }
+      .featured-collections-tabs .tab-btn {
+        white-space: nowrap  !important;
+      }
+      .featured-collections-tabs  .products-grid {
+          grid-template-columns: repeat(2, 1fr);
+          margin:12px;
+      }
+      .featured-collections-tabs .tab-btn:nth-of-type(1) {
+          margin-left: 15%;
+      } 
+
+    }
+    @media (max-width: 600px) {
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+      .featured-collections-tabs .tab-btn:nth-of-type(1){
+        margin-left: 100%;
+      }
+    }
+    @media (max-width: 400px) {
+      .featured-collections-tabs .tab-btn:nth-of-type(1){
+        margin-left: 120%;
+      }
+    }
+    @media (max-width: 360px) {
+      .featured-collections-tabs .tab-btn:nth-of-type(1){
+        margin-left: 150%;
+      }
+    }
+  </style>
+
+  <script>
+    document.querySelectorAll('.collection-tabs .tab-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const tabId = this.dataset.tab;
+
+        // Remove active from all buttons
+        document.querySelectorAll('.collection-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+
+        // Show selected tab content
+        document.querySelectorAll('.tab-content .tab-pane').forEach(p => p.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Featured Collection Tabs",
+  "settings": [
+    { "type": "text", "id": "section_title", "label": "Section Title", "default": "Featured Collections" },
+    { "type": "number", "id": "items_per_tab", "label": "Number of products per tab", "default": 4 },
+    { "type": "number", "id": "desktop_columns", "label": "Products per row (desktop)", "default": 4 },
+
+    /* Tab Styling Options */
+    { "type": "color", "id": "tab_bg_color", "label": "Tab Background Color", "default": "#f0f0f0" },
+    { "type": "color", "id": "tab_text_color", "label": "Tab Text Color", "default": "#000000" },
+    { "type": "color", "id": "tab_active_bg_color", "label": "Active Tab Background Color", "default": "#000000" },
+    { "type": "color", "id": "tab_active_text_color", "label": "Active Tab Text Color", "default": "#ffffff" },
+    { "type": "range", "id": "tab_border_radius", "label": "Tab Border Radius (px)", "min": 0, "max": 50, "step": 1, "default": 6 },
+    { "type": "range", "id": "tab_padding", "label": "Tab Padding (px)", "min": 5, "max": 50, "step": 1, "default": 10 },
+    { "type": "number", "id": "tab_gap", "label": "Gap Between Tabs (px)", "default": 15 }
+  ],
+  "blocks": [
+    {
+      "type": "collection_tab",
+      "name": "Collection Tab",
+      "settings": [
+        { "type": "text", "id": "collection_title", "label": "Tab Title", "default": "Polo Shirts" },
+        { "type": "collection", "id": "collection_handle", "label": "Select Collection" }
+      ]
+    }
+  ],
+  "max_blocks": 10,
+  "presets": [ { "name": "Featured Collections Tabs" } ]
+}
+{% endschema %}

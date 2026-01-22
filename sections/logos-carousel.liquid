@@ -1,0 +1,132 @@
+<section class="logos-carousel-section">
+  <div class="page-width" style="background-color: {{ section.settings.section_bg_color }};">
+    {% if section.settings.section_title %}
+      <h2 class="section-title">{{ section.settings.section_title }}</h2>
+    {% endif %}
+
+    <div class="logos-carousel-wrapper">
+      {% for block in section.blocks %}
+        {% if block.settings.logo_image %}
+          <div class="carousel-item">
+            {% if block.settings.logo_link %}
+              <a href="{{ block.settings.logo_link }}" target="_blank">
+                <img 
+                  src="{{ block.settings.logo_image | img_url: '300x300' }}" 
+                  alt="{{ block.settings.logo_alt_text }}" 
+                  style="width:100%; height:auto; border-radius: {{ section.settings.logo_border_radius }}px;" height="" width="">
+              </a>
+            {% else %}
+              <img 
+                src="{{ block.settings.logo_image | img_url: '300x300' }}" 
+                alt="{{ block.settings.logo_alt_text }}" 
+                style="width:100%; height:auto; border-radius: {{ section.settings.logo_border_radius }}px;" height="" width="">
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+<!-- Slick CSS & JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+  <style>
+    .logos-carousel-section .section-title {
+      font-family: Archivo;
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: 6%;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 25px;
+      margin-top: 20px;
+      position: relative;
+    }
+    .logos-carousel-section h2.section-title:after {
+      content: "";
+      border: 1px solid #D3D3D3;
+      position: absolute;
+      display: block;
+      width: 25px;
+      margin: auto;
+      left: 0;
+      right: 0;
+      bottom: -10px;
+    }
+    .logos-carousel-section .page-width{
+        padding: 35px;
+    }
+    .logos-carousel-wrapper{
+        margin:70px auto 35px;
+    }
+    .logos-carousel-section .carousel-item img {
+      max-height: 25px;
+      object-fit: scale-down;
+    }
+    section.logos-carousel-section {
+        margin-bottom: 35px;
+    }
+  </style>
+
+  <script>
+    jQuery(document).ready(function($){
+      $('.logos-carousel-wrapper').slick({
+        slidesToShow: {{ section.settings.slides_desktop }},
+        slidesToScroll: 1,
+        autoplay: {{ section.settings.autoplay | json }},
+        autoplaySpeed: {{ section.settings.autoplay_speed }},
+        arrows: {{ section.settings.show_arrows | json }},
+        dots: {{ section.settings.show_dots | json }},
+        responsive: [
+          {
+            breakpoint: 1024,
+            settings: {
+              slidesToShow: {{ section.settings.slides_tablet }}
+            }
+          },
+          {
+            breakpoint: 768,
+            settings: {
+              slidesToShow: {{ section.settings.slides_mobile }}
+            }
+          }
+        ]
+      });
+    });
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Logos Carousel",
+  "settings": [
+    { "type": "text", "id": "section_title", "label": "Section Title", "default": "Our Partners" },
+    { "type": "color", "id": "section_bg_color", "label": "Section Background Color", "default": "#ffffff" },
+    { "type": "number", "id": "slides_desktop", "label": "Slides per view (Desktop)", "default": 5 },
+    { "type": "number", "id": "slides_tablet", "label": "Slides per view (Tablet)", "default": 3 },
+    { "type": "number", "id": "slides_mobile", "label": "Slides per view (Mobile)", "default": 2 },
+    { "type": "range", "id": "logo_gap", "label": "Gap Between Logos (px)", "min": 0, "max": 50, "step": 1, "default": 20 },
+    { "type": "range", "id": "carousel_padding", "label": "Carousel Padding (px)", "min": 0, "max": 100, "step": 1, "default": 20 },
+    { "type": "range", "id": "logo_border_radius", "label": "Logo Border Radius (px)", "min": 0, "max": 50, "step": 1, "default": 0 },
+    { "type": "checkbox", "id": "autoplay", "label": "Autoplay Carousel", "default": true },
+    { "type": "number", "id": "autoplay_speed", "label": "Autoplay Speed (ms)", "default": 2000 },
+    { "type": "checkbox", "id": "show_arrows", "label": "Show Arrows", "default": true },
+    { "type": "checkbox", "id": "show_dots", "label": "Show Dots", "default": false }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        { "type": "image_picker", "id": "logo_image", "label": "Logo Image" },
+        { "type": "text", "id": "logo_alt_text", "label": "Logo Alt Text" },
+        { "type": "url", "id": "logo_link", "label": "Logo Link (optional)" }
+      ]
+    }
+  ],
+  "max_blocks": 20,
+  "presets": [ { "name": "Logos Carousel" } ]
+}
+{% endschema %}

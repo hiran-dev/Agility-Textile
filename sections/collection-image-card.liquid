@@ -1,0 +1,229 @@
+<section class="collection-image-card">
+  {% assign collection = collections[section.settings.collection] %}
+
+  {% if collection != blank %}
+    <a href="{{ collection.url }}" class="collection-card-link">
+      <div class="collection-card" style="--text-align: {{ section.settings.text_align }};">
+
+        {% assign img_url = '' %}
+        {% if section.settings.image_source == 'collection' %}
+          {% assign img_url = collection.image | image_url: width: 1600 %}
+        {% elsif section.settings.image_source == 'first_product' %}
+          {% assign first_product = collection.products.first %}
+          {% if first_product != blank %}
+            {% assign img_url = first_product.featured_image | image_url: width: 1600 %}
+          {% endif %}
+        {% elsif section.settings.image_source == 'custom' %}
+          {% assign img_url = section.settings.custom_image | image_url: width: 1600 %}
+        {% endif %}
+
+        {% if img_url != blank %}
+          <img
+            src="{{ img_url }}"
+            alt="{{ collection.title }}"
+            loading="lazy"
+            {% if section.settings.image_size_option == 'custom' %}
+              style="height: {{ section.settings.custom_height }}px; object-fit: cover;"
+            {% else %}
+              style="height: auto; object-fit: contain;"
+            {% endif %}
+            width="" height=""
+          >
+        {% endif %}
+
+        <div class="collection-card-content position-{{ section.settings.content_position }}"
+             style="background: {{ section.settings.overlay_bg }}; color: {{ section.settings.text_color }};">
+
+          <span class="collection-label">
+            {{ section.settings.top_label }}
+          </span>
+
+          <h3 class="collection-title">
+            {{ collection.title }}
+          </h3>
+
+          <span class="collection-cta">
+            {{ section.settings.cta_text }}
+          </span>
+
+        </div>
+      </div>
+    </a>
+  {% endif %}
+</section>
+
+<style>
+.collection-image-card {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.collection-card {
+  position: relative;
+  overflow: hidden;
+      margin: 25px;
+}
+
+.collection-card img {
+  width: 100%;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+/* Overlay content */
+.collection-card-content {
+  position: absolute;
+  padding: 20px;
+  min-width: 220px;
+  text-align: var(--text-align);
+}
+
+/* Positions */
+.position-bottom-left {
+  bottom: 5px;
+  left: 5px;
+}
+
+.position-bottom-center {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.position-bottom-right {
+  bottom: 5px;
+  right: 5px;
+}
+
+/* Text styles */
+.collection-label {
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+  opacity: 0.8;
+}
+
+.collection-title {
+  font-size: 22px;
+  margin: 0 0 10px;
+  line-height: 1.2;
+  color: {{ section.settings.text_color }};
+}
+
+.collection-cta {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-bottom: 1px solid currentColor;
+  display: inline-block;
+  padding-bottom: 2px;
+}
+
+/* Hover */
+.collection-card:hover img {
+  transform: scale(1.05);
+}
+
+.collection-card-link {
+  text-decoration: none;
+  display: block;
+}
+</style>
+
+{% schema %}
+{
+  "name": "Collection Image Card",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Select Collection"
+    },
+    {
+      "type": "select",
+      "id": "image_source",
+      "label": "Image Source",
+      "default": "collection",
+      "options": [
+        { "value": "collection", "label": "Collection Image" },
+        { "value": "first_product", "label": "First Product Image" },
+        { "value": "custom", "label": "Custom Image" }
+      ]
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_image",
+      "label": "Custom Image"
+    },
+    {
+      "type": "text",
+      "id": "top_label",
+      "label": "Top Label",
+      "default": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA Text",
+      "default": "Explore"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "overlay_bg",
+      "label": "Overlay Background",
+      "default": "rgba(0,0,0,0.4)"
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Content Position",
+      "default": "bottom-left",
+      "options": [
+        { "value": "bottom-left", "label": "Bottom Left" },
+        { "value": "bottom-center", "label": "Bottom Center" },
+        { "value": "bottom-right", "label": "Bottom Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text Alignment",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "image_size_option",
+      "label": "Image Size Option",
+      "default": "fit",
+      "options": [
+        { "value": "fit", "label": "Fit to image height" },
+        { "value": "custom", "label": "Custom Height" }
+      ]
+    },
+    {
+      "type": "number",
+      "id": "custom_height",
+      "label": "Custom Height (px)",
+      "default": 400
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Image with Text"
+    }
+  ]
+}
+{% endschema %}
