@@ -289,36 +289,12 @@
   margin: 1.3rem;
 }
 
-/* .card__media .media img {
+.card__media .media img {
   height: 100%;
   object-fit: cover;
   object-position: center center;
   width: 100%;
-} */
-
-/* --- FIXED SECTION START --- */
-.card__media .media img {
-  height: auto !important;      /* Allows image to keep its natural height */
-  max-height: 100%;             /* Ensures it doesn't spill out of the card */
-  width: 100%;
-  object-fit: contain !important; /* Forces the whole image to show inside the box */
-  object-position: center center;
 }
-
-.card__inner {
-  width: 100%;
-  overflow: hidden;             /* Keeps the card clean */
-  display: flex;
-  align-items: center;          /* Centers the model if the photo is thin */
-}
-
-/* Ensure the container doesn't force a crop */
-.card .card__inner .card__media {
-  overflow: visible !important; 
-  position: relative !important;
-}
-/* --- FIXED SECTION END --- */
-
 
 .card__inner:not(.ratio) > .card__content {
   height: 100%;
